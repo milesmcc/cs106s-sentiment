@@ -46,6 +46,16 @@ function semanticAnalysis() {
     var label = getScore(tweet.classification); // Returns 1 if pro-refugee, -1 if anti-refugee
 
     // TODO: In-class tutorial: update wordMap based on the words in this tweet + the label
+    for (j = 0; j < words.length; j++) {
+      var stemmedWord = stemmer(words[j]);
+      if (!wordMap.hasOwnProperty(stemmedWord)) {
+        wordMap[stemmedWord] = label;
+      }
+
+      else {
+        wordMap[stemmedWord] += label;
+      }
+    }
   }
 
   /* TODO: For the homework assignment - expand this for-loop to create a wordMap that has tf-idf
@@ -70,6 +80,29 @@ function semanticAnalysis() {
     var tweet = testTweets[i];
 
     // TODO: set myGuesses[tweet.tweetID] = true/false based on your prediction for this tweet
+
+    var words = tweet.tweet.toLowerCase().split(" ");
+    var count = 0;
+
+    for (var j = 0; j < words.length; j++) {
+      var stemmedWord = stemmer(words[j]);
+      //ASK: What should we do if we run across a word that wasn't in the training set?
+      if (wordMap.hasOwnProperty(stemmedWord)) {
+        var change = wordMap[stemmedWord];
+        count += change;
+      }
+    }
+
+    if (count < 0) {
+      //It's a negative tweet
+      myGuesses[tweet.tweetID] = true;
+    }
+    else {
+      //It's a positive tweet!
+      myGuesses[tweet.tweetID] = false;
+    }
+
+
   }
   /*********** END CODE HERE *********/
 
